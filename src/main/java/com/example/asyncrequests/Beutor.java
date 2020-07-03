@@ -27,12 +27,15 @@ public class Beutor {
       DeferredResult<String> deferred = new DeferredResult<>();
 
       log.info("Vin la bar");
-      CompletableFuture<Bere> futureBere = barman.toarnaBere();
-      CompletableFuture<Vodka> futureVodka = barman.toarnaVodka();
+      CompletableFuture<Bere> futureBere = CompletableFuture.supplyAsync(barman::toarnaBere)
+         /* .exceptionally(e -> null)*/;
+      CompletableFuture<Vodka> futureVodka = CompletableFuture.supplyAsync(barman::toarnaVodka);
 //      CompletableFuture.allOf(futureBere, futureVodka).thenRun(() -> System.out.println("Sunt gata bauturile"));
       log.info("A plecat fata cu comanda");
       // JOIN
-      CompletableFuture<DillyDilly> futureDilly = futureBere.thenCombine(futureVodka, DillyDilly::new);
+      CompletableFuture<DillyDilly> futureDilly = futureBere.thenCombine(futureVodka, DillyDilly::new)
+          .exceptionally(e -> null);
+
 
 //      Bere bere = futureBere.get();
 //      // pana aici main doarme 1 sec <--- problema
