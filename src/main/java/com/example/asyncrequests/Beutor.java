@@ -27,13 +27,14 @@ public class Beutor {
       DeferredResult<String> deferred = new DeferredResult<>();
 
       log.info("Vin la bar");
-      CompletableFuture<Bere> futureBere = CompletableFuture.supplyAsync(barman::toarnaBere)
+      Executor fjp = new ForkJoinPool(5);
+      CompletableFuture<Bere> futureBere = CompletableFuture.supplyAsync(barman::toarnaBere, fjp)
          /* .exceptionally(e -> null)*/;
       CompletableFuture<Vodka> futureVodka = CompletableFuture.supplyAsync(barman::toarnaVodka);
 //      CompletableFuture.allOf(futureBere, futureVodka).thenRun(() -> System.out.println("Sunt gata bauturile"));
       log.info("A plecat fata cu comanda");
       // JOIN
-      CompletableFuture<DillyDilly> futureDilly = futureBere.thenCombine(futureVodka, DillyDilly::new)
+      CompletableFuture<DillyDilly> futureDilly = futureBere.thenCombineAsync(futureVodka, DillyDilly::new, fjp )
           .exceptionally(e -> null);
 
 
