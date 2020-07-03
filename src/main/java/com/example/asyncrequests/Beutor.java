@@ -5,16 +5,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 @RestController
 public class Beutor {
    private static final Logger log = LoggerFactory.getLogger(Beutor.class);
 
-   static ExecutorService barmani = Executors.newFixedThreadPool(2);
+//   static ExecutorService barmani = Executors.newFixedThreadPool(2);
 
    private final Barman barman;
 
@@ -27,8 +24,10 @@ public class Beutor {
       log.info("Vin la bar");
 
 
-      Future<Bere> futureBere = barmani.submit(barman::toarnaBere);
-      Future<Vodka> futureVodka = barmani.submit(barman::toarnaVodka);
+      CompletableFuture<Bere> futureBere = CompletableFuture.supplyAsync(barman::toarnaBere);
+      CompletableFuture<Vodka> futureVodka = CompletableFuture.supplyAsync(barman::toarnaVodka);
+
+
       log.info("A plecat fata cu comanda");
 
       Bere bere = futureBere.get();
